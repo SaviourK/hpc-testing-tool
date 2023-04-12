@@ -6,6 +6,9 @@ import org.pcap4j.core.NotOpenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static cz.it4i.fiji.transport.utils.ExecutorUtils.startPacketCapturing;
+import static cz.it4i.fiji.transport.utils.ExecutorUtils.stopPacketCapturing;
+
 import java.io.IOException;
 
 public class CmdExecutor {
@@ -19,9 +22,11 @@ public class CmdExecutor {
 	private static final Logger logger = LoggerFactory.getLogger(CmdExecutor.class);
 
 	public void executeCmd(ProcessBuilder pb, PcapRunnable pcapRunnable) throws IOException, NotOpenException {
-		Thread thread = startPacketCapturing(pcapRunnable);
+		Thread thread = startPacketCapturing(pcapRunnable, stopWatch);
 
-		logger.info("Executing cmd: {}", String.join(" ", pb.command().toArray(new String[0])));
+		if (logger.isInfoEnabled()) {
+			logger.info("Executing cmd: {}", String.join(" ", pb.command().toArray(new String[0])));
+		}
 		Process process = pb.start();
 		try {
 			int exitCode = process.waitFor();
@@ -33,25 +38,7 @@ public class CmdExecutor {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		stopPacketCapturing(pcapRunnable, thread);
-	}
-
-	private Thread startPacketCapturing(PcapRunnable pcapRunnable) {
-		// Start packet capture
-		Thread thread = new Thread(pcapRunnable);
-		thread.start();
-		stopWatch.start();
-		return thread;
-	}
-
-	private void stopPacketCapturing(PcapRunnable pcapRunnable, Thread thread) throws NotOpenException {
-		// Stop packet capture
-		stopWatch.stop();
-		pcapRunnable.stop();
-		thread.interrupt();
-
-		logger.info("Total time taken {}ms", stopWatch.getTime());
-		stopWatch.reset();
+		stopPacketCapturing(pcapRunnable, thread, stopWatch);
 	}
 
 	// Multiple cmds

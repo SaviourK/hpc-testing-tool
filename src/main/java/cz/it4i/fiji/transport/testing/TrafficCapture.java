@@ -41,7 +41,6 @@ public class TrafficCapture {
 	}
 
 	private static String getDeviceNameByPhysicalAddr(String devicePhysicalAddr) throws PcapNativeException {
-		System.out.println("Pcap Interfaces: ");
 		for (PcapNetworkInterface dev : Pcaps.findAllDevs()) {
 			for (LinkLayerAddress linkLayerAddress : dev.getLinkLayerAddresses()) {
 				if (linkLayerAddress.toString().equals(devicePhysicalAddr)) {

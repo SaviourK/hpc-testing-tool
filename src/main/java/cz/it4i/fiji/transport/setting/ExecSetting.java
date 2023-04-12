@@ -1,6 +1,6 @@
-package cz.it4i.fiji.transport.config;
+package cz.it4i.fiji.transport.setting;
 
-public class ExecConfig {
+public class ExecSetting {
 
 	private final boolean upload;
 
@@ -10,7 +10,7 @@ public class ExecConfig {
 	private final String filePath;
 	private final String pcapFilePrefix;
 
-	public ExecConfig(boolean upload, String filePath, String pcapFilePrefix) {
+	public ExecSetting(boolean upload, String filePath, String pcapFilePrefix) {
 		this.upload = upload;
 		this.filePath = filePath;
 		this.pcapFilePrefix = pcapFilePrefix;
